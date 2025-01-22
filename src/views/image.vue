@@ -26,7 +26,7 @@
         </template>
       </el-upload>
 
-      <div v-if="convertedImages.length > 0" class="preview-area">
+      <div class="preview-area">
         <div class="preview-header">
           <h3>转换预览</h3>
           <el-button type="primary" @click="downloadAll" :icon="Download">
@@ -34,32 +34,30 @@
           </el-button>
         </div>
 
-        <el-row :gutter="20">
-          <el-col 
+        <div class="preview-list">
+          <div 
             v-for="(image, index) in convertedImages" 
             :key="index"
-            :span="8"
+            class="image-card card-shadow"
           >
-            <el-card class="image-card card-shadow">
-              <div class="image-wrapper">
-                <img :src="image.url" :alt="image.name" class="preview-image" />
-              </div>
+            <div class="image-wrapper">
+              <img :src="image.url" :alt="image.name" class="preview-image" />
+            </div>
+            <div class="image-info">
+              <h4 class="image-name">{{ image.name }}</h4>
+              <p class="image-size">{{ image.size }}</p>
               <div class="image-actions">
-                <el-tooltip :content="image.name" placement="top">
-                  <span class="image-name">{{ image.name }}</span>
-                </el-tooltip>
                 <el-button 
                   type="primary" 
-                  size="small"
                   @click="downloadImage(image)"
                   :icon="Download"
                 >
                   下载
                 </el-button>
               </div>
-            </el-card>
-          </el-col>
-        </el-row>
+            </div>
+          </div>
+        </div>
       </div>
     </el-card>
   </div>
@@ -91,9 +89,14 @@ const handleImageUpload = async (file) => {
       
       // 转换为PNG格式
       const pngUrl = canvas.toDataURL('image/png')
+      
+      // 计算文件大小
+      const size = formatFileSize(Math.round(pngUrl.length * 0.75))
+      
       convertedImages.value.push({
         name: file.name.replace('.webp', '.png'),
-        url: pngUrl
+        url: pngUrl,
+        size
       })
       
       ElMessage.success('图片转换成功')
@@ -101,6 +104,15 @@ const handleImageUpload = async (file) => {
     img.src = e.target.result
   }
   reader.readAsDataURL(file.raw)
+}
+
+// 格式化文件大小
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`
 }
 
 // 下载单个图片
@@ -143,75 +155,233 @@ const downloadAll = () => {
   margin: 0 auto;
 }
 
+.upload-area :deep(.el-upload) {
+  width: 100%;
+  display: block;
+}
+
+.upload-area :deep(.el-upload-dragger) {
+  width: 100% !important;
+  height: 240px;
+  padding: 32px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.upload-area :deep(.el-icon--upload) {
+  font-size: 64px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.upload-area :deep(.el-upload__text) {
+  font-size: 16px;
+  color: var(--text-color-light);
+}
+
+.upload-area :deep(.el-upload__tip) {
+  margin-top: 12px;
+  color: var(--text-color-light);
+  text-align: center;
+}
+
 .preview-area {
   margin-top: 40px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .preview-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .preview-header h3 {
   margin: 0;
+  font-size: 18px;
+  color: var(--text-color);
 }
 
 .image-card {
-  margin-bottom: 20px;
-  transition: transform 0.3s ease;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 24px;
 }
 
 .image-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .image-wrapper {
-  background: #f5f7fa;
-  border-radius: 4px;
+  background: #f8fafc;
+  border-radius: 8px;
   overflow: hidden;
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
 }
 
 .preview-image {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: contain;
-  display: block;
+  padding: 12px;
 }
 
-.image-actions {
-  margin-top: 12px;
+.image-info {
+  flex: 1;
+  min-width: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .image-name {
-  font-size: 14px;
-  color: var(--text-color-light);
+  font-size: 15px;
+  color: var(--text-color);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 150px;
-  cursor: default;
+  margin: 0;
+}
+
+.image-size {
+  font-size: 14px;
+  color: var(--text-color-light);
+  margin: 0;
+}
+
+.image-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .el-button {
-  padding: 12px 24px;
+  padding: 10px 24px;
   font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
-.el-button [class*="el-icon"] + span {
-  margin-left: 8px;
+.el-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-:deep(.el-upload-dragger) {
-  padding: 30px;
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .image-card {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .image-wrapper {
+    width: 120px;
+    height: 120px;
+  }
+
+  .preview-image {
+    padding: 8px;
+  }
+
+  .image-name {
+    font-size: 14px;
+  }
+
+  .image-size {
+    font-size: 13px;
+  }
+
+  .el-button {
+    padding: 8px 20px;
+    font-size: 14px;
+  }
+
+  .upload-area {
+    max-width: 100%;
+  }
+
+  .upload-area :deep(.el-upload-dragger) {
+    height: 180px;
+    padding: 24px;
+    gap: 12px;
+  }
+
+  .upload-area :deep(.el-icon--upload) {
+    font-size: 48px;
+  }
+
+  .upload-area :deep(.el-upload__text) {
+    font-size: 14px;
+  }
+
+  .upload-area :deep(.el-upload__tip) {
+    font-size: 13px;
+    margin-top: 8px;
+  }
 }
 
-:deep(.el-upload__tip) {
-  margin-top: 12px;
-  color: var(--text-color-light);
+/* 小屏幕适配 */
+@media screen and (max-width: 480px) {
+  .image-card {
+    padding: 10px;
+    gap: 12px;
+  }
+
+  .image-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  .preview-image {
+    padding: 6px;
+  }
+
+  .image-name {
+    font-size: 13px;
+  }
+
+  .image-size {
+    font-size: 12px;
+  }
+
+  .el-button {
+    padding: 6px 16px;
+    font-size: 13px;
+  }
+
+  .upload-area :deep(.el-upload-dragger) {
+    height: 160px;
+    padding: 20px;
+    gap: 8px;
+  }
+
+  .upload-area :deep(.el-icon--upload) {
+    font-size: 40px;
+  }
+
+  .upload-area :deep(.el-upload__text) {
+    font-size: 13px;
+  }
+
+  .upload-area :deep(.el-upload__tip) {
+    font-size: 12px;
+    margin-top: 6px;
+  }
 }
 </style> 

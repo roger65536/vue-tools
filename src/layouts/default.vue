@@ -14,13 +14,16 @@
 
         <!-- 导航链接 -->
         <div class="nav-links" :class="{ 'nav-active': isMenuOpen }">
-          <router-link to="/qrcode" class="nav-link" @click="closeMenu">
-            <el-icon><Promotion /></el-icon>
-            <span>二维码工具</span>
-          </router-link>
-          <router-link to="/image" class="nav-link" @click="closeMenu">
-            <el-icon><Picture /></el-icon>
-            <span>图片转换</span>
+          <router-link 
+            v-for="nav in navLinks" 
+            :key="nav.path"
+            :to="nav.path" 
+            class="nav-link"
+            :class="{ 'active': isActive(nav.path) }"
+            @click="closeMenu"
+          >
+            <el-icon><component :is="nav.icon" /></el-icon>
+            <span>{{ nav.text }}</span>
           </router-link>
         </div>
       </nav>
@@ -48,12 +51,29 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElContainer, ElHeader, ElMain, ElFooter } from 'element-plus'
 import { Tools, Promotion, Picture, Menu } from '@element-plus/icons-vue'
 
+const route = useRoute()
 const isMenuOpen = ref(false)
 
+// 导航配置
+const navLinks = [
+  { path: '/qrcode', icon: 'Promotion', text: '二维码工具' },
+  { path: '/image', icon: 'Picture', text: '图片转换' }
+]
+
+// 判断路由是否激活
+const isActive = (path) => {
+  if (path === '/') {
+    return route.path === '/'
+  }
+  return route.path.startsWith(path)
+}
+
+// 切换菜单
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
   if (isMenuOpen.value) {
@@ -63,10 +83,17 @@ const toggleMenu = () => {
   }
 }
 
+// 关闭菜单
 const closeMenu = () => {
   isMenuOpen.value = false
   document.body.style.overflow = ''
 }
+
+// 监听路由变化
+watch(route, () => {
+  // 路由变化时关闭菜单
+  closeMenu()
+}, { deep: true })
 </script>
 
 <style scoped>
@@ -76,10 +103,12 @@ const closeMenu = () => {
 }
 
 .header {
-  background: linear-gradient(135deg, #409EFF 0%, #3178c6 100%);
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
   color: white;
   padding: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px -1px rgba(0,0,0,0.2),
+              0 4px 5px 0 rgba(0,0,0,0.14),
+              0 1px 10px 0 rgba(0,0,0,0.12);
   position: fixed;
   width: 100%;
   z-index: 1000;
@@ -120,7 +149,8 @@ const closeMenu = () => {
 .nav-links {
   margin-left: 40px;
   display: flex;
-  gap: 20px;
+  gap: 0;
+  height: 100%;
 }
 
 .nav-link {
@@ -128,14 +158,46 @@ const closeMenu = () => {
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 8px 16px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
+  gap: 8px;
+  padding: 0 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  font-weight: 500;
+  height: 100%;
+  border-radius: 0;
 }
 
 .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: none;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.9);
+  transform: scaleX(0);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+  opacity: 0;
+}
+
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.nav-link.active::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+.nav-link .el-icon {
+  font-size: 18px;
+  transition: transform 0.3s ease;
 }
 
 .main-container {
@@ -188,40 +250,66 @@ const closeMenu = () => {
   .nav-links {
     position: fixed;
     top: 60px;
-    left: -100%;
-    width: 70%;
-    max-width: 300px;
+    left: 0;
+    width: 75%;
     height: calc(100vh - 60px);
-    background: white;
+    margin: 0;
+    padding: 16px 0;
+    background: #ffffff;
     flex-direction: column;
     gap: 0;
-    margin: 0;
-    padding: 20px 0;
-    transition: left 0.3s ease;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 8px 10px -5px rgba(0,0,0,0.2),
+                0 16px 24px 2px rgba(0,0,0,0.14),
+                0 6px 30px 5px rgba(0,0,0,0.12);
   }
 
   .nav-links.nav-active {
-    left: 0;
+    transform: translateX(0);
   }
 
   .nav-link {
     color: var(--text-color);
-    padding: 15px 20px;
-    border-radius: 0;
-    width: 100%;
+    padding: 15px 20px 15px 24px;
+    height: auto;
+    border-left: 3px solid transparent;
+    background: transparent;
+    font-weight: normal;
+  }
+
+  .nav-link::after {
+    display: none;
   }
 
   .nav-link:hover {
-    background-color: var(--background-color);
+    background-color: #f5f7fa;
+  }
+
+  .nav-link.active {
+    background-color: rgba(25, 118, 210, 0.08);
+    border-left-color: #1976d2;
+    color: #1976d2;
+  }
+
+  .nav-link:hover .el-icon,
+  .nav-link.active .el-icon {
+    transform: none;
+  }
+
+  .nav-link:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
   }
 
   .overlay {
     display: block;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
   }
 
   .main-container {
-    padding: 70px 15px 15px;
+    padding: 70px 12px 12px;
   }
 
   .footer {
@@ -238,6 +326,14 @@ const closeMenu = () => {
 
   .nav-links {
     width: 85%;
+  }
+
+  .nav-link {
+    padding: 12px 16px 12px 20px;
+  }
+
+  .nav-link .el-icon {
+    font-size: 16px;
   }
 }
 </style> 
