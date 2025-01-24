@@ -11,11 +11,7 @@ export default defineConfig({
     }
   },
   css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@use "@/assets/styles/variables.scss" as *;`
-      }
-    }
+    devSourcemap: true,
   },
   server: {
     port: 3000,
