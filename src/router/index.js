@@ -22,6 +22,11 @@ const router = createRouter({
           path: 'image',
           name: 'image',
           component: () => import('../views/image.vue')
+        },
+        {
+          path: 'encrypt',
+          name: 'encrypt',
+          component: () => import('../views/encrypt.vue')
         }
       ]
     }

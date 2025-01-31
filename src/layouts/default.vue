@@ -62,7 +62,8 @@ const isMenuOpen = ref(false)
 // 导航配置
 const navLinks = [
   { path: '/qrcode', icon: 'Promotion', text: '二维码工具' },
-  { path: '/image', icon: 'Picture', text: '图片转换' }
+  { path: '/image', icon: 'Picture', text: '图片转换' },
+  { path: '/encrypt', icon: 'Lock', text: '加密工具' }
 ]
 
 // 判断路由是否激活
