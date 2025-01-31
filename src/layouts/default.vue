@@ -204,7 +204,6 @@ watch(route, () => {
 .main-container {
   padding: 80px 20px 20px;
   max-width: 1200px;
-  margin: 0 auto;
   min-height: calc(100vh - 60px);
 }
 
