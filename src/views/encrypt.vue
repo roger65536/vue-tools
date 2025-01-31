@@ -23,10 +23,10 @@
               <div class="algorithm-selector">
                 <span class="algorithm-label">加密算法：</span>
                 <el-radio-group v-model="algorithm" @change="handleInput">
-                  <el-radio-button label="md5">MD5</el-radio-button>
-                  <el-radio-button label="sha1">SHA-1</el-radio-button>
-                  <el-radio-button label="sha256">SHA-256</el-radio-button>
-                  <el-radio-button label="sha512">SHA-512</el-radio-button>
+                  <el-radio-button value="md5">MD5</el-radio-button>
+                  <el-radio-button value="sha1">SHA-1</el-radio-button>
+                  <el-radio-button value="sha256">SHA-256</el-radio-button>
+                  <el-radio-button value="sha512">SHA-512</el-radio-button>
                 </el-radio-group>
               </div>
             </el-form-item>
