@@ -217,6 +217,9 @@ const copyResult = () => {
   padding: 24px;
   border-radius: 12px;
   min-height: 160px;
+  width: 800px;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
 .result-text {
@@ -226,6 +229,8 @@ const copyResult = () => {
   word-break: break-all;
   color: var(--text-color);
   margin-bottom: 16px;
+  width: 100%;
+  overflow-wrap: break-word;
 }
 
 .result-info {
@@ -287,8 +292,8 @@ const copyResult = () => {
   }
 
   .result-content {
+    width: 100%;
     padding: 20px;
-    min-height: 140px;
   }
 
   .result-text {
