@@ -22,12 +22,24 @@
             <el-form-item>
               <div class="algorithm-selector">
                 <span class="algorithm-label">加密算法：</span>
-                <el-radio-group v-model="algorithm" @change="handleInput">
-                  <el-radio-button value="md5">MD5</el-radio-button>
-                  <el-radio-button value="sha1">SHA-1</el-radio-button>
-                  <el-radio-button value="sha256">SHA-256</el-radio-button>
-                  <el-radio-button value="sha512">SHA-512</el-radio-button>
-                </el-radio-group>
+                <!-- 桌面端显示 -->
+                <div class="desktop-selector">
+                  <el-radio-group v-model="algorithm" @change="handleInput">
+                    <el-radio-button value="md5">MD5</el-radio-button>
+                    <el-radio-button value="sha1">SHA-1</el-radio-button>
+                    <el-radio-button value="sha256">SHA-256</el-radio-button>
+                    <el-radio-button value="sha512">SHA-512</el-radio-button>
+                  </el-radio-group>
+                </div>
+                <!-- 移动端显示 -->
+                <div class="mobile-selector">
+                  <el-select v-model="algorithm" @change="handleInput" class="algorithm-select">
+                    <el-option value="md5" label="MD5" />
+                    <el-option value="sha1" label="SHA-1" />
+                    <el-option value="sha256" label="SHA-256" />
+                    <el-option value="sha512" label="SHA-512" />
+                  </el-select>
+                </div>
               </div>
             </el-form-item>
           </el-form>
@@ -260,11 +272,32 @@ const copyResult = () => {
   margin: 0;
 }
 
+.desktop-selector {
+  display: block;
+}
+
+.mobile-selector {
+  display: none;
+}
+
+.algorithm-select {
+  width: 100%;
+}
+
 /* 移动端适配 */
 @media screen and (max-width: 768px) {
   .encrypt-content {
     padding: 20px;
     gap: 24px;
+  }
+
+  .desktop-selector {
+    display: none;
+  }
+
+  .mobile-selector {
+    display: block;
+    width: 150px;
   }
 
   .algorithm-selector {
@@ -277,17 +310,7 @@ const copyResult = () => {
     font-size: 14px;
   }
 
-  :deep(.el-radio-group) {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  :deep(.el-radio-button) {
-    flex-grow: 1;
-  }
-
-  :deep(.el-radio-button__inner) {
+  :deep(.el-select) {
     width: 100%;
   }
 
