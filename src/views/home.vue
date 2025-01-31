@@ -41,6 +41,19 @@
           </div>
         </el-card>
       </el-col>
+      <el-col :xs="24" :sm="12" :md="8">
+        <el-card class="tool-card" @click="$router.push('/json')">
+          <template #header>
+            <div class="card-header">
+              <h2>JSON工具</h2>
+            </div>
+          </template>
+          <div class="card-content">
+            <p>- JSON格式化</p>
+            <p>- Unicode转换</p>
+          </div>
+        </el-card>
+      </el-col>
     </el-row>
   </div>
 </template>

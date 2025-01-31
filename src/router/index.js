@@ -27,6 +27,11 @@ const router = createRouter({
           path: 'encrypt',
           name: 'encrypt',
           component: () => import('../views/encrypt.vue')
+        },
+        {
+          path: 'json',
+          name: 'json',
+          component: () => import('../views/json.vue')
         }
       ]
     }

@@ -63,7 +63,8 @@ const isMenuOpen = ref(false)
 const navLinks = [
   { path: '/qrcode', icon: 'Promotion', text: '二维码工具' },
   { path: '/image', icon: 'Picture', text: '图片转换' },
-  { path: '/encrypt', icon: 'Lock', text: '加密工具' }
+  { path: '/encrypt', icon: 'Lock', text: '加密工具' },
+  { path: '/json', icon: 'Document', text: 'JSON工具' }
 ]
 
 // 判断路由是否激活
@@ -203,7 +204,6 @@ watch(route, () => {
 
 .main-container {
   padding: 80px 20px 20px;
-  max-width: 1200px;
   min-height: calc(100vh - 60px);
 }
 
